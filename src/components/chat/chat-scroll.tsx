@@ -12,7 +12,16 @@ const STICK_PX = 48
  * back down. Mount it per chat (`key={sessionId}`) so a freshly opened chat
  * lands on its newest message.
  */
-export function ChatScroll({ children, className }: { children: ReactNode; className?: string }) {
+export function ChatScroll({
+  children,
+  className,
+  follow = true,
+}: {
+  children: ReactNode
+  className?: string
+  /** Pin to the bottom and follow growth. Off for the empty state, which reads top-down. */
+  follow?: boolean
+}) {
   const viewportRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const stuck = useRef(true)
@@ -29,14 +38,14 @@ export function ChatScroll({ children, className }: { children: ReactNode; class
   // Any growth of the content re-pins the bottom, but only while stuck.
   useEffect(() => {
     const content = contentRef.current
-    if (!content) return
+    if (!content || !follow) return
     scrollToBottom()
     const observer = new ResizeObserver(() => {
       if (stuck.current) scrollToBottom()
     })
     observer.observe(content)
     return () => observer.disconnect()
-  }, [])
+  }, [follow])
 
   const onScroll = () => {
     const node = viewportRef.current
@@ -44,7 +53,7 @@ export function ChatScroll({ children, className }: { children: ReactNode; class
     const gap = node.scrollHeight - node.scrollTop - node.clientHeight
     const atBottom = gap < STICK_PX
     stuck.current = atBottom
-    setShowJump(!atBottom)
+    setShowJump(follow && !atBottom)
   }
 
   return (

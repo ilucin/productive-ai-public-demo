@@ -244,7 +244,7 @@ export default function App() {
           </DropdownMenu>
         </header>
 
-        <ChatScroll key={sessionId ?? 'new'}>
+        <ChatScroll key={sessionId ?? 'new'} follow={!empty}>
           {empty ? (
             <EmptyState onPrompt={(text) => void handleSend(text)} disabled={busy} />
           ) : (
