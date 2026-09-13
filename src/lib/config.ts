@@ -46,3 +46,32 @@ export const STORAGE_KEYS = {
   jwt: 'shift-demo.jwt',
   currentSession: 'shift-demo.current-session',
 } as const
+
+/**
+ * The demo identity behind the PAT, resolved once via
+ * `GET /organization_memberships` (see `scripts/mint-jwt.mjs`). Kept here so
+ * the app does not depend on that call at runtime.
+ */
+export const DEMO_IDENTITY = {
+  personId: '1445022',
+  userId: '301518',
+  email: 'ivan.lucin+shiftpublicaccount@productive.io',
+  organizationId: ORGANIZATION_ID,
+} as const
+
+/**
+ * A pre-minted assistant JWT for the demo user.
+ *
+ * Needed because `api.productive.io` only allows CORS from *.productive.io
+ * and localhost, so the static app on GitHub Pages cannot mint a token
+ * itself (it can on localhost, and does, as the fallback). Minted with a
+ * 7-day lifetime by `node scripts/mint-jwt.mjs`; the app reads the real
+ * expiry from the token and falls back to a live mint once it is stale.
+ * Derived from the PAT above, so it exposes nothing the repo does not
+ * already expose.
+ *
+ * Minted 2026-09-13, expires 2026-09-20T11:48:03Z. Re-run the script and
+ * paste the output here to refresh.
+ */
+export const DEMO_JWT =
+  'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozMDE1MTgsImV4cCI6MTc4OTkwNDg4MywidHlwZSI6IndyaXRlIiwicGVyc29uX2lkIjoiMTQ0NTAyMiIsIm9yZ2FuaXphdGlvbl9pZCI6IjYxNzE1IiwidXNlcl9lbWFpbCI6Iml2YW4ubHVjaW4rc2hpZnRwdWJsaWNhY2NvdW50QHByb2R1Y3RpdmUuaW8ifQ.Sdp3SnSEXfT6iqCsxIzOlE1RmcDKZI1MdgJEPHKoJpI'

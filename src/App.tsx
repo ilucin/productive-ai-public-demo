@@ -6,7 +6,7 @@ import { LoginScreen } from '@/components/login-screen'
 import { ChatThread } from '@/components/chat/chat-thread'
 import { Composer } from '@/components/chat/composer'
 import { useChat } from '@/hooks/use-chat'
-import { getIdentity, isSignedIn, rememberSignedIn, signOut } from '@/lib/ai/auth'
+import { getJwt, isSignedIn, rememberSignedIn, signOut } from '@/lib/ai/auth'
 import { createSession } from '@/lib/ai/client'
 import { closeSocket, onConnectionChange, type ConnectionState } from '@/lib/ai/socket'
 import { STORAGE_KEYS } from '@/lib/config'
@@ -72,11 +72,10 @@ function ChatScreen() {
 
   const chat = useChat(sessionId)
 
-  // Resolve the identity early so the first send does not pay for it.
+  // Warm the token so the first send does not pay for a mint. A failure here
+  // is not worth a toast: the send path reports its own errors.
   useEffect(() => {
-    getIdentity().catch((error: unknown) => {
-      toast.error(error instanceof Error ? error.message : 'Could not resolve the demo identity')
-    })
+    void getJwt().catch(() => undefined)
   }, [])
 
   useEffect(() => onConnectionChange(setConnection), [])

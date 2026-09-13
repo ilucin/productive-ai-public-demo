@@ -15,7 +15,7 @@
  *    answers 401.
  *  --------------------------------------------------------------- */
 
-import { API_HOST, DEMO_PAT, ORGANIZATION_ID, STORAGE_KEYS } from '@/lib/config'
+import { API_HOST, DEMO_IDENTITY, DEMO_JWT, DEMO_PAT, ORGANIZATION_ID, STORAGE_KEYS } from '@/lib/config'
 import { readJson, remove, writeJson } from '@/lib/storage'
 
 export interface Identity {
@@ -82,8 +82,14 @@ async function fetchIdentity(): Promise<Identity> {
 
 let identityInFlight: Promise<Identity> | null = null
 
-/** The demo identity, read once and remembered in localStorage. */
+/**
+ * The demo identity. The baked-in one is used first (no network, no CORS);
+ * the membership lookup is only there if it is ever removed from config.
+ */
 export function getIdentity(): Promise<Identity> {
+  if (DEMO_IDENTITY.personId && DEMO_IDENTITY.userId && DEMO_IDENTITY.email) {
+    return Promise.resolve({ ...DEMO_IDENTITY })
+  }
   const cached = readJson<Identity>(STORAGE_KEYS.identity)
   if (cached?.personId && cached.userId && cached.email && cached.organizationId === ORGANIZATION_ID) {
     return Promise.resolve(cached)
@@ -118,6 +124,20 @@ const JWT_REFRESH_MARGIN_MS = 10 * 60 * 1000
 let jwtCache: CachedJwt | null = readJson<CachedJwt>(STORAGE_KEYS.jwt)
 let jwtInFlight: Promise<string> | null = null
 
+/** The `exp` claim of a JWT, in unix ms — or 0 if it cannot be read. */
+export function jwtExpiresAt(token: string): number {
+  try {
+    const payload = token.split('.')[1] ?? ''
+    const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'))
+    const exp = (JSON.parse(json) as { exp?: number }).exp
+    return exp ? exp * 1000 : 0
+  } catch {
+    return 0
+  }
+}
+
+const isFresh = (expiresAt: number) => expiresAt - Date.now() > JWT_REFRESH_MARGIN_MS
+
 async function mint(identity: Identity): Promise<string> {
   const response = await fetch(`${API_HOST}/api/v2/sessions/jwt`, {
     method: 'POST',
@@ -147,12 +167,17 @@ async function mint(identity: Identity): Promise<string> {
 }
 
 /**
- * A JWT for the assistant, minted on demand and reused until it is close to
- * expiring. Concurrent callers share one mint.
+ * A JWT for the assistant: the pre-minted `DEMO_JWT` while it is fresh,
+ * otherwise minted on demand (only possible from an origin the API allows —
+ * localhost, *.productive.io) and reused until it is close to expiring.
+ * Concurrent callers share one mint.
  */
 export async function getJwt(): Promise<string> {
+  // The shipped token, while it lasts: works from any origin, costs nothing.
+  if (DEMO_JWT && isFresh(jwtExpiresAt(DEMO_JWT))) return DEMO_JWT
+
   const current = jwtCache
-  if (current && current.expiresAt - Date.now() > JWT_REFRESH_MARGIN_MS) return current.token
+  if (current && isFresh(current.expiresAt)) return current.token
   if (jwtInFlight) return jwtInFlight
 
   jwtInFlight = getIdentity()
