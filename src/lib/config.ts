@@ -48,6 +48,7 @@ export const STORAGE_KEYS = {
 export const LINKS = {
   productive: 'https://productive.io',
   repo: 'https://github.com/ilucin/productive-ai-public-demo',
+  linkedin: 'https://www.linkedin.com/in/ivanlucin/',
   talk: 'https://shift.infobip.com/',
 } as const
 

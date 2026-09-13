@@ -83,6 +83,9 @@ export function ChatList({
           <a href={LINKS.repo} target="_blank" rel="noreferrer" className="hover:text-fg-muted">
             GitHub
           </a>
+          <a href={LINKS.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-fg-muted">
+            LinkedIn
+          </a>
         </span>
       </footer>
     </div>

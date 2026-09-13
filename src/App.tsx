@@ -236,6 +236,12 @@ export default function App() {
                   Source on GitHub
                 </a>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <a href={LINKS.linkedin} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink />
+                  Connect with Ivan on LinkedIn
+                </a>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuLabel className="font-normal normal-case tracking-normal text-fg-subtle">
                 Shared demo account · limited AI credits
