@@ -237,7 +237,7 @@ export default function App() {
                 </a>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel className="font-normal text-fg-subtle">
+              <DropdownMenuLabel className="font-normal normal-case tracking-normal text-fg-subtle">
                 Shared demo account · limited AI credits
               </DropdownMenuLabel>
             </DropdownMenuContent>
