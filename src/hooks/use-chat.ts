@@ -33,11 +33,9 @@ import {
 import {
   isSocketConnected,
   onSocketConnect,
-  onSystemMessage,
   sendChatMessage,
   stopChatRun,
   subscribeToChat,
-  type SystemMessage,
 } from '@/lib/ai/socket'
 import { randomUuid } from '@/lib/utils'
 
@@ -54,8 +52,17 @@ export interface ProcessingStep {
   kind: 'thinking' | 'action'
   label: string
   status: 'running' | 'done' | 'error'
+  /** When it started (unix ms) — places it between the messages around it. */
+  at: number
+  endedAt?: number
   toolName?: string
   error?: string
+}
+
+export interface Thought {
+  id: string
+  text: string
+  at: number
 }
 
 export interface ChatState {
@@ -64,7 +71,7 @@ export interface ChatState {
   events: AgentSessionEvent[]
   streaming: StreamingMessage | null
   steps: ProcessingStep[]
-  thoughts: { id: string; text: string }[]
+  thoughts: Thought[]
   plan: { text: string; done: boolean }[]
   status: AgentSessionStatus | null
   /** Set when the agent is waiting on the user. */
@@ -238,17 +245,7 @@ export function useChat(sessionId: string | null): ChatState & {
       () => setConversation((prev) => (prev.id === sessionId ? { ...prev, subscribed: true } : prev)),
     )
 
-    const offSystem = onSystemMessage((message: SystemMessage) => {
-      setConversation((prev) => ({
-        ...prev,
-        error: message.error?.text ?? 'The assistant reported an error',
-      }))
-    })
-
-    return () => {
-      off()
-      offSystem()
-    }
+    return off
   }, [sessionId])
 
   // A socket that has just (re)connected may have missed a whole turn.
@@ -275,7 +272,7 @@ export function useChat(sessionId: string | null): ChatState & {
 
     const messages: AgentSessionEvent[] = []
     const steps = new Map<string, ProcessingStep>()
-    const thoughts = new Map<string, { id: string; text: string }>()
+    const thoughts = new Map<string, Thought>()
     let plan: { text: string; done: boolean }[] = session?.plan?.items ?? []
     let status: AgentSessionStatus | null = session?.status ?? null
     let statusAt = session?.status?.updatedAtTimestamp ?? 0
@@ -299,13 +296,18 @@ export function useChat(sessionId: string | null): ChatState & {
               kind: step.kind,
               label: step.label,
               status: step.status,
+              at: steps.get(step.id)?.at ?? step.startedAt ?? event.timestamp,
+              endedAt: step.endedAt,
               toolName: step.toolName,
               error: step.error,
             })
           }
           break
         case 'thought':
-          if (event.thought) thoughts.set(event.thought.id, event.thought)
+          if (event.thought) {
+            const { id, text, createdAt } = event.thought
+            thoughts.set(id, { id, text, at: createdAt || event.timestamp })
+          }
           break
         case 'plan':
           if (event.plan) plan = event.plan.items

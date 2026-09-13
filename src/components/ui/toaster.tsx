@@ -5,7 +5,10 @@ import { Toaster as Sonner } from 'sonner'
 export function Toaster() {
   return (
     <Sonner
-      position="bottom-right"
+      // Top, so a toast never sits on the composer of a phone.
+      position="top-center"
+      offset={{ top: 56 }}
+      mobileOffset={{ top: 56 }}
       style={
         {
           '--toast-close-button-start': 'unset',

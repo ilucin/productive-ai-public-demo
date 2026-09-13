@@ -193,21 +193,3 @@ export function clearJwt(): void {
   jwtCache = null
   remove(STORAGE_KEYS.jwt)
 }
-
-/* -------------------------------------------------------------- */
-/*  The cosmetic login                                             */
-/* -------------------------------------------------------------- */
-
-export function isSignedIn(): boolean {
-  return readJson<boolean>(STORAGE_KEYS.signedIn) === true
-}
-
-export function rememberSignedIn(): void {
-  writeJson(STORAGE_KEYS.signedIn, true)
-}
-
-export function signOut(): void {
-  remove(STORAGE_KEYS.signedIn)
-  remove(STORAGE_KEYS.identity)
-  clearJwt()
-}

@@ -17,12 +17,6 @@ export const API_HOST = 'https://api.productive.io'
 /** The demo workspace. */
 export const ORGANIZATION_ID = '61715'
 
-/** The cosmetic login: validated locally, never sent anywhere. */
-export const DEMO_LOGIN = {
-  email: 'ivan.lucin+shiftpublicaccount@productive.io',
-  password: 'ShiftVisitor',
-} as const
-
 /** The Visitor user's personal access token, used for the JWT mint. */
 export const DEMO_PAT = 'ea4acece-79b1-45de-a45e-528846dff253'
 
@@ -41,11 +35,31 @@ export const CLIENT_TYPE = 'app-agent-chat'
 
 /** localStorage keys, in one place so a reset can clear them all. */
 export const STORAGE_KEYS = {
-  signedIn: 'shift-demo.signed-in',
   identity: 'shift-demo.identity',
   jwt: 'shift-demo.jwt',
-  currentSession: 'shift-demo.current-session',
+  /** The per-browser chat list — see `lib/chats.ts`. */
+  chats: 'shift-demo.chats',
+  currentChat: 'shift-demo.current-chat',
+  /** Pre-list single key; read once and migrated into `chats`. */
+  legacyCurrentSession: 'shift-demo.current-session',
 } as const
+
+/** Where the footer and the menu point. */
+export const LINKS = {
+  productive: 'https://productive.io',
+  repo: 'https://github.com/ilucin/productive-ai-public-demo',
+  talk: 'https://shift.infobip.com/',
+} as const
+
+/** Tapping one sends it as-is — the empty state's opening moves. */
+export const SUGGESTED_PROMPTS = [
+  'What is this talk about?',
+  'How does the agent harness decide which tool to call?',
+  "What's on the Shift 2026 agenda today?",
+  'Explain zero-framework cognition',
+  'How does the agent manage its context window?',
+  'Who is speaking at Foam Stage?',
+] as const
 
 /**
  * The demo identity behind the PAT, resolved once via
