@@ -1,0 +1,250 @@
+/* Theme tokens copied from fantastic-productive `src/index.css` (the default
+ * palette only — the named `data-palette` variants, ProseMirror, calendar and
+ * automation tones were left behind). Light on bare `:root`, dark via
+ * `prefers-color-scheme` unless `data-theme="light"` is set, and an explicit
+ * `data-theme="dark"` toggle that wins in both directions. */
+@import "tailwindcss" source(none);
+@plugin "tailwindcss-animate";
+@source "../src";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+  --font-sans: "Inter var", "Inter", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Menlo", monospace;
+
+  --text-2xs: 0.75rem;
+  --text-2xs--line-height: 1.0625rem;
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.1875rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.3125rem;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.375rem;
+
+  --radius-base: 6px;
+  --radius-lg: 8px;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Light palette (default, on bare :root) ---------- */
+:root {
+  --bg: oklch(1 0 0);
+  --bg-subtle: oklch(0.985 0.001 260);
+  --bg-sunken: oklch(0.968 0.002 260);
+  --bg-elevated: oklch(1 0 0);
+  --bg-hover: oklch(0.962 0.003 260);
+  --bg-active: oklch(0.94 0.004 260);
+
+  --fg: oklch(0.21 0.008 260);
+  --fg-muted: oklch(0.52 0.011 260);
+  --fg-subtle: oklch(0.64 0.01 260);
+
+  --border: oklch(0.912 0.004 260);
+  --border-strong: oklch(0.855 0.006 260);
+
+  --accent: oklch(0.55 0.215 274);
+  --accent-fg: oklch(1 0 0);
+  --accent-subtle: oklch(0.955 0.02 274);
+
+  --danger: oklch(0.575 0.215 20);
+  --danger-subtle: oklch(0.96 0.03 20);
+  --success: oklch(0.62 0.17 152);
+  --success-subtle: oklch(0.95 0.04 152);
+  --warning: oklch(0.72 0.16 75);
+  --warning-subtle: oklch(0.96 0.05 75);
+
+  --ring: oklch(0.55 0.215 274 / 0.45);
+
+  /* What a finger leaves behind while it is held down. */
+  --tap: oklch(0 0 0 / 0.1);
+  --shadow-popover: 0 1px 2px oklch(0 0 0 / 0.04), 0 8px 24px oklch(0 0 0 / 0.08);
+  --shadow-card: 0 1px 2px oklch(0 0 0 / 0.05);
+
+  /* Gradient channel — `none` paints nothing; a theme may opt in. Read by the
+   * `surface-*` / `edge-grad` utilities below. */
+  --grad-app: none;
+  --grad-panel: none;
+  --grad-elevated: none;
+  --grad-accent: none;
+  --grad-edge: none;
+}
+
+/* ---------- Dark palette: system default ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.185 0.006 265);
+    --bg-subtle: oklch(0.208 0.007 265);
+    --bg-sunken: oklch(0.163 0.006 265);
+    --bg-elevated: oklch(0.232 0.008 265);
+    --bg-hover: oklch(0.252 0.009 265);
+    --bg-active: oklch(0.285 0.01 265);
+
+    --fg: oklch(0.955 0.002 260);
+    --fg-muted: oklch(0.7 0.009 260);
+    --fg-subtle: oklch(0.575 0.01 260);
+
+    --border: oklch(0.292 0.009 265);
+    --border-strong: oklch(0.365 0.011 265);
+
+    --accent: oklch(0.665 0.18 274);
+    --accent-fg: oklch(0.16 0.01 265);
+    --accent-subtle: oklch(0.29 0.05 274);
+
+    --danger: oklch(0.67 0.19 22);
+    --danger-subtle: oklch(0.3 0.07 22);
+    --success: oklch(0.7 0.15 152);
+    --success-subtle: oklch(0.29 0.06 152);
+    --warning: oklch(0.79 0.14 75);
+    --warning-subtle: oklch(0.3 0.06 75);
+
+    --ring: oklch(0.665 0.18 274 / 0.55);
+
+    --tap: oklch(1 0 0 / 0.15);
+    --shadow-popover: 0 1px 2px oklch(0 0 0 / 0.3), 0 8px 24px oklch(0 0 0 / 0.45);
+    --shadow-card: 0 1px 2px oklch(0 0 0 / 0.25);
+  }
+}
+
+/* ---------- Dark palette: explicit toggle ---------- */
+:root[data-theme="dark"] {
+  --bg: oklch(0.185 0.006 265);
+  --bg-subtle: oklch(0.208 0.007 265);
+  --bg-sunken: oklch(0.163 0.006 265);
+  --bg-elevated: oklch(0.232 0.008 265);
+  --bg-hover: oklch(0.252 0.009 265);
+  --bg-active: oklch(0.285 0.01 265);
+
+  --fg: oklch(0.955 0.002 260);
+  --fg-muted: oklch(0.7 0.009 260);
+  --fg-subtle: oklch(0.575 0.01 260);
+
+  --border: oklch(0.292 0.009 265);
+  --border-strong: oklch(0.365 0.011 265);
+
+  --accent: oklch(0.665 0.18 274);
+  --accent-fg: oklch(0.16 0.01 265);
+  --accent-subtle: oklch(0.29 0.05 274);
+
+  --danger: oklch(0.67 0.19 22);
+  --danger-subtle: oklch(0.3 0.07 22);
+  --success: oklch(0.7 0.15 152);
+  --success-subtle: oklch(0.29 0.06 152);
+  --warning: oklch(0.79 0.14 75);
+  --warning-subtle: oklch(0.3 0.06 75);
+
+  --ring: oklch(0.665 0.18 274 / 0.55);
+
+  --tap: oklch(1 0 0 / 0.15);
+  --shadow-popover: 0 1px 2px oklch(0 0 0 / 0.3), 0 8px 24px oklch(0 0 0 / 0.45);
+  --shadow-card: 0 1px 2px oklch(0 0 0 / 0.25);
+}
+
+/* Tailwind colour utilities (`bg-bg`, `text-fg-muted`, `border-border`,
+ * `bg-accent-subtle`…) resolve through these. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-bg-sunken: var(--bg-sunken);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-hover: var(--bg-hover);
+  --color-bg-active: var(--bg-active);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-subtle: var(--accent-subtle);
+  --color-danger: var(--danger);
+  --color-danger-subtle: var(--danger-subtle);
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    color-scheme: light dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior: none;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  ::selection {
+    background: var(--accent-subtle);
+  }
+  /* thin, Linear-ish scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 4px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@utility no-drag {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+/* Gradient channel — each does nothing until a theme fills its token. */
+@utility surface-app {
+  background-image: var(--grad-app);
+}
+@utility surface-panel {
+  background-image: var(--grad-panel);
+}
+@utility surface-elevated {
+  background-image: var(--grad-elevated);
+}
+@utility surface-accent {
+  background-image: var(--grad-accent);
+}
+
+/* A masked 1px gradient ring that follows `border-radius`. Inert while
+ * `--grad-edge` is `none`. */
+@utility edge-grad {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: var(--grad-edge);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
