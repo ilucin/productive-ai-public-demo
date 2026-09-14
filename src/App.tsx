@@ -328,7 +328,9 @@ function Brand() {
       <span className="flex size-6 shrink-0 items-center justify-center rounded-[0.3rem] bg-accent text-accent-fg">
         <Bot className="size-4" strokeWidth={2} />
       </span>
-      <span className="truncate text-sm font-semibold tracking-[-0.01em]">Productive AI</span>
+      <span className="truncate text-sm font-semibold tracking-[-0.01em]">
+        <span className="hidden sm:inline">Productive </span>AI
+      </span>
       <span className="shrink-0 text-fg-subtle">×</span>
       <span className="shrink-0 rounded-full border border-border bg-bg-sunken px-2 py-px text-2xs font-medium text-fg-muted">
         Shift 2026
